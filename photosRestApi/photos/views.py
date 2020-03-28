@@ -25,7 +25,11 @@ class PhotoViewSet(viewsets.ModelViewSet):
         """
         queryset = Photo.objects.all()
         user = self.request.query_params.get('user', None)
-        user_obj = User.objects.get(username=user)
         if user is not None:
+            user_obj = User.objects.get(username=user)
             queryset = queryset.filter(author_id=user_obj.id)
+            
+        status = self.request.query_params.get('status', None)
+        if status is not None:
+            queryset = queryset.filter(status=status)
         return queryset

@@ -33,13 +33,13 @@ class Tag(models.Model):
 # Create your models here.
 class Photo(models.Model):
     STATE = (
-    (0, 'DRAFT'),
-    (1, 'PUBLISHED'))
+    ('DRAFT', 'DRAFT'),
+    ('PUBLISHED', 'PUBLISHED'))
     id = models.UUIDField(default=uuid.uuid4, editable=False, unique=True, primary_key=True)
     image = models.ImageField(storage=PublicMediaStorage(), upload_to=get_file_path, blank=False)
     author = models.ForeignKey(User, on_delete=models.CASCADE)
     caption = models.TextField(blank=True)
-    status = models.IntegerField(choices=STATE, default='0')
+    status = models.TextField(choices=STATE, default='0')
     created = models.DateTimeField(auto_now_add=True)
     tags = models.ManyToManyField(Tag, blank=True)
     
