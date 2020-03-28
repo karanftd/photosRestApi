@@ -2,6 +2,7 @@ from django.shortcuts import render
 from photosRestApi.photos.models import Photo
 from rest_framework import viewsets
 from rest_framework.response import Response
+from django.contrib.auth.models import User
 from photosRestApi.photos.serializers import PhotoSerializer
 
 # Create your views here.
@@ -16,3 +17,15 @@ class PhotoViewSet(viewsets.ModelViewSet):
     
     def perform_destroy(self, instance):
         instance.delete()
+        
+    def get_queryset(self):
+        """
+        Optionally restricts the returned purchases to a given user,
+        by filtering against a `username` query parameter in the URL.
+        """
+        queryset = Photo.objects.all()
+        user = self.request.query_params.get('user', None)
+        user_obj = User.objects.get(username=user)
+        if user is not None:
+            queryset = queryset.filter(author_id=user_obj.id)
+        return queryset
