@@ -20,7 +20,7 @@ from django.conf.urls import url, include
 from rest_framework import routers
 
 router = routers.DefaultRouter()
-router.register(r'photo', views.PhotosViewSet)
+router.register(r'photo', views.PhotoViewSet)
 
 urlpatterns = [
     path('admin/', admin.site.urls),

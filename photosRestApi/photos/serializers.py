@@ -1,7 +1,7 @@
 from rest_framework import serializers
-from photosRestApi.photos.models import Photos
+from photosRestApi.photos.models import Photo
 
-class PhotosSerializer(serializers.HyperlinkedModelSerializer):
+class PhotoSerializer(serializers.HyperlinkedModelSerializer):
     class Meta:
-        model = Photos
+        model = Photo
         fields = ('id', 'image', 'author', 'caption', 'status')
