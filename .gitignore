@@ -167,3 +167,10 @@ dmypy.json
 # Pyre type checker
 
 # End of https://www.gitignore.io/api/django,python
+
+# virtual env
+venv/
+
+# editor generated files
+.idea/
+.vscode/
