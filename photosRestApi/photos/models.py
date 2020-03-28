@@ -17,10 +17,13 @@ def my_callback(sender, instance, *args, **kwargs):
         return
 
     tags = re.findall(r"#(\w+)", instance.caption)
-    
+    print(tags)
+    tags_objs = []
     for tag in tags:
-        obj, _ = Tag.objects.get_or_create(tag=tag)        
-        instance.tags.add(obj)
+        obj, _ = Tag.objects.get_or_create(tag=tag)
+        tags_objs.append(obj)        
+    
+    instance.tags.set(tags_objs)
 
 
 class Tag(models.Model):
