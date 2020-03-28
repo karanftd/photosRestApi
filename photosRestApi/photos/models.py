@@ -1,12 +1,31 @@
 import uuid
+import re
 from django.contrib.auth.models import User
 from django.db import models
+from django.dispatch import receiver
+from django.db.models.signals import pre_save
 from photosRestApi.photos.storage_backends import PublicMediaStorage
 
 
 def get_file_path(instance, filename):
     ext = filename.split('.')[-1]
     return "%s.%s" % (uuid.uuid4(), ext)
+
+@receiver(pre_save)
+def my_callback(sender, instance, *args, **kwargs):
+    if not isinstance(instance, Photo):
+        return
+
+    tags = re.findall(r"#(\w+)", instance.caption)
+    
+    for tag in tags:
+        obj, _ = Tag.objects.get_or_create(tag=tag)        
+        instance.tags.add(obj)
+
+
+class Tag(models.Model):
+    tag = models.CharField(max_length=100)
+
 
 # Create your models here.
 class Photo(models.Model):
@@ -19,6 +38,7 @@ class Photo(models.Model):
     caption = models.TextField(blank=True)
     status = models.IntegerField(choices=STATE, default='0')
     created = models.DateTimeField(auto_now_add=True)
+    tags = models.ManyToManyField(Tag, blank=True)
     
     class Meta:
         ordering = ('-pk', )
