@@ -1,10 +1,11 @@
 from datetime import datetime
 from django.shortcuts import render
 from django.contrib.auth.models import User
-from rest_framework import viewsets
+from rest_framework import viewsets, status
 from rest_framework.response import Response
 from rest_framework.filters import OrderingFilter
 from rest_framework.permissions import IsAuthenticated
+from django_filters import rest_framework as filters
 from photosRestApi.photos.serializers import PhotoSerializer
 from photosRestApi.photos.models import Photo
 
@@ -17,6 +18,9 @@ class PhotoViewSet(viewsets.ModelViewSet):
     permission_classes = (IsAuthenticated,)
     queryset = Photo.objects.all()
     serializer_class = PhotoSerializer
+    filter_backends = [filters.DjangoFilterBackend, OrderingFilter]
+    ordering_fields = ['published_at']
+    filterset_fields = ['tags', 'author', 'status']
     
     def destroy(self, request, *args, **kwargs):
         """Handle DELETE requests
@@ -39,23 +43,23 @@ class PhotoViewSet(viewsets.ModelViewSet):
         """
         instance.delete()
         
-    def get_queryset(self):
-        """
-        Get request filtering for by User & State
-        """
-        queryset = Photo.objects.all()
-        user = self.request.query_params.get(
-            'user', self.request.user.username
-        )
-        if user.lower() == "all":
-            return queryset
+    # def get_queryset(self):
+    #     """
+    #     Get request filtering for by User & State
+    #     """
+    #     queryset = Photo.objects.all()
+    #     user = self.request.query_params.get(
+    #         'user', self.request.user.username
+    #     )
+    #     if user.lower() == "all":
+    #         return queryset
         
-        if user is not None:
-            user_obj = User.objects.get(username=user)
-            queryset = queryset.filter(author_id=user_obj.id)
+    #     if user is not None:
+    #         user_obj = User.objects.get(username=user)
+    #         queryset = queryset.filter(author_id=user_obj.id)
             
-        status = self.request.query_params.get('status', None)
-        if status is not None:
-            queryset = queryset.filter(status=status)
-        return queryset
+    #     status = self.request.query_params.get('status', None)
+    #     if status is not None:
+    #         queryset = queryset.filter(status=status)
+    #     return queryset
 

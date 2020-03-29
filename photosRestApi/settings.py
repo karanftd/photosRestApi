@@ -62,6 +62,7 @@ INSTALLED_APPS = [
     'rest_framework',
     'photosRestApi.photos',
     'storages',
+    'django_filters',
 ]
 
 MIDDLEWARE = [
