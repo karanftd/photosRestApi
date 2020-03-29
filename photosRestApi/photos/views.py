@@ -3,6 +3,7 @@ from photosRestApi.photos.models import Photo
 from rest_framework import viewsets
 from rest_framework.response import Response
 from django.contrib.auth.models import User
+from rest_framework.permissions import IsAuthenticated
 from photosRestApi.photos.serializers import PhotoSerializer
 
 # Create your views here.
@@ -10,6 +11,7 @@ class PhotoViewSet(viewsets.ModelViewSet):
     """Handle CURD operation on Photos
 
     """
+    permission_classes = (IsAuthenticated,)
     queryset = Photo.objects.all()
     serializer_class = PhotoSerializer
     

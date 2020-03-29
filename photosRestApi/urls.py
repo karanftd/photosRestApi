@@ -18,6 +18,7 @@ from django.urls import path
 from photosRestApi.photos import views
 from django.conf.urls import url, include
 from rest_framework import routers
+from rest_framework_simplejwt import views as jwt_views
 
 router = routers.DefaultRouter()
 router.register(r'photo', views.PhotoViewSet)
@@ -25,5 +26,6 @@ router.register(r'photo', views.PhotoViewSet)
 urlpatterns = [
     path('admin/', admin.site.urls),
     url(r'^', include(router.urls)),
-    url(r'^api-auth/', include('rest_framework.urls', namespace='rest_framework'))
+    path('token/', jwt_views.TokenObtainPairView.as_view(), name='token_obtain_pair'),
+    path('token/refresh/', jwt_views.TokenRefreshView.as_view(), name='token_refresh'),
 ]
