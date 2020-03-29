@@ -6,7 +6,7 @@ from django.conf import settings
 from django.contrib.auth.models import User
 from django.db import models
 from django.dispatch import receiver
-from django.db.models.signals import pre_save, post_save
+from django.db.models.signals import pre_save
 from django.core.exceptions import ValidationError
 from photosRestApi.photos.storage_backends import PublicMediaStorage
 
@@ -54,13 +54,10 @@ def my_callback(sender, instance, *args, **kwargs):
         instance.published_at = datetime.now()
     
     tags = re.findall(r"#(\w+)", instance.caption)
-    tags_objs = []
-    instance.tags.clear()
+    tags = [tag.lower() for tag in tags]
     for tag in tags:
         obj, _ = Tag.objects.get_or_create(tag=tag)
-        tags_objs.append(obj)        
-    
-    instance.tags.set(tags_objs)
+        instance.tags.add(obj)
 
 
 class Tag(models.Model):

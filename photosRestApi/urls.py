@@ -28,6 +28,4 @@ urlpatterns = [
     url(r'^', include(router.urls)),
     url(r'^token/', obtain_jwt_token),
     url(r'^token/refresh/', refresh_jwt_token),
-    # path('token/', jwt_views.TokenObtainPairView.as_view(), name='token_obtain_pair'),
-    # path('token/refresh/', jwt_views.TokenRefreshView.as_view(), name='token_refresh'),
 ]
