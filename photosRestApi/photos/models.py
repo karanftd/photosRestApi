@@ -1,11 +1,29 @@
 import uuid
 import re
+from PIL import Image
+from django.conf import settings
 from django.contrib.auth.models import User
 from django.db import models
 from django.dispatch import receiver
-from django.db.models.signals import pre_save
+from django.db.models.signals import pre_save, post_save
+from django.core.exceptions import ValidationError
 from photosRestApi.photos.storage_backends import PublicMediaStorage
 
+def validate_image(image):
+    file_size = image.file.size
+    img = Image.open(image) 
+    width = img.size[0]
+    height = img.size[1]
+
+    limit_mb = settings.MAX_UPLOAD_SIZE_IN_MB
+    limit_height = settings.MAX_UPLOAD_HEIGHT_IN_PX
+    limit_width = settings.MAX_UPLOAD_WIDTH_IN_PX
+    
+    if height > limit_height or width > limit_width:
+        raise ValidationError("Max image dimentions are %s x %s" % (limit_height, limit_width))
+    
+    if file_size > limit_mb * 1024 * 1024:
+       raise ValidationError("Max size of file is %s MB" % limit_mb)
 
 def get_file_path(instance, filename):
     """generate unique file name for image
@@ -33,9 +51,10 @@ def my_callback(sender, instance, *args, **kwargs):
     
     if instance.status == "PUBLISHED" and not instance.published_at:
         instance.published_at = datetime.now()
-
+    
     tags = re.findall(r"#(\w+)", instance.caption)
     tags_objs = []
+    instance.tags.clear()
     for tag in tags:
         obj, _ = Tag.objects.get_or_create(tag=tag)
         tags_objs.append(obj)        
@@ -67,7 +86,7 @@ class Photo(models.Model):
     ('DRAFT', 'DRAFT'),
     ('PUBLISHED', 'PUBLISHED'))
     id = models.UUIDField(default=uuid.uuid4, editable=False, unique=True, primary_key=True)
-    image = models.ImageField(storage=PublicMediaStorage(), upload_to=get_file_path, blank=False)
+    image = models.ImageField(storage=PublicMediaStorage(), upload_to=get_file_path, blank=False, validators=[validate_image])
     author = models.ForeignKey(User, on_delete=models.CASCADE)
     caption = models.TextField(blank=True)
     status = models.TextField(choices=STATE, default='DRAFT')
