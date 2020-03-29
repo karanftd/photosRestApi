@@ -7,7 +7,14 @@ ENV PYTHONUNBUFFERED 1
 # Copy all our files into the image.
 RUN mkdir /code
 WORKDIR /code
-RUN apk add build-base python-dev py-pip jpeg-dev zlib-dev 
+RUN apk add build-base python-dev py-pip jpeg-dev zlib-dev
+RUN apk update \
+    && apk add --virtual build-deps gcc python3-dev musl-dev \
+    && apk add postgresql-dev \
+    && pip install psycopg2 \
+    && apk del build-deps
+
+
 ENV LIBRARY_PATH=/lib:/usr/lib
 COPY requirements.txt /code/requirements.txt
 COPY . /code/
