@@ -6,6 +6,7 @@ ENV PYTHONUNBUFFERED 1
 
 # Copy all our files into the image.
 RUN mkdir /code
+RUN mkdir /code/static
 WORKDIR /code
 RUN apk add build-base python-dev py-pip jpeg-dev zlib-dev
 RUN apk update \
