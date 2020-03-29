@@ -58,26 +58,4 @@ class PhotoViewSet(viewsets.ModelViewSet):
         if status is not None:
             queryset = queryset.filter(status=status)
         return queryset
-    
-    # PUT
-    def update(self, request, *args, **kwargs):
-        """Handle Update record
-        
-        """
-        instance = Photo.objects.get(id=request.data.get('id'))
-        state = request.data.get("status")
-        import pdb ; pdb.set_trace()
-        if state == "PUBLISHED" and not instance.published_at:
-            instance.published_at = datetime.now()
-            instance.save()
-        
-        if request.data.get("caption") and instance.caption != request.data.get("caption"):
-            #instance.tags.clear()
-            #instance.is_valid()
-            #instance.save()
-            pass
 
-        serializer = self.get_serializer(instance)
-        self.perform_update(serializer)
-
-        return Response(serializer.data)

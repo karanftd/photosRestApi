@@ -30,9 +30,11 @@ def my_callback(sender, instance, *args, **kwargs):
     """
     if not isinstance(instance, Photo):
         return
+    
+    if instance.status == "PUBLISHED" and not instance.published_at:
+        instance.published_at = datetime.now()
 
     tags = re.findall(r"#(\w+)", instance.caption)
-    print(tags)
     tags_objs = []
     for tag in tags:
         obj, _ = Tag.objects.get_or_create(tag=tag)
