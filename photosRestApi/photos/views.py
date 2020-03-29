@@ -1,10 +1,13 @@
+from datetime import datetime
 from django.shortcuts import render
-from photosRestApi.photos.models import Photo
+from django.contrib.auth.models import User
 from rest_framework import viewsets
 from rest_framework.response import Response
-from django.contrib.auth.models import User
+from rest_framework.filters import OrderingFilter
 from rest_framework.permissions import IsAuthenticated
 from photosRestApi.photos.serializers import PhotoSerializer
+from photosRestApi.photos.models import Photo
+
 
 # Create your views here.
 class PhotoViewSet(viewsets.ModelViewSet):
@@ -40,8 +43,13 @@ class PhotoViewSet(viewsets.ModelViewSet):
         """
         Get request filtering for by User & State
         """
-        queryset = Photo.objects.all().
-        user = self.request.query_params.get('user', None)
+        queryset = Photo.objects.all()
+        user = self.request.query_params.get(
+            'user', self.request.user.username
+        )
+        if user.lower() == "all":
+            return queryset
+        
         if user is not None:
             user_obj = User.objects.get(username=user)
             queryset = queryset.filter(author_id=user_obj.id)
@@ -50,3 +58,26 @@ class PhotoViewSet(viewsets.ModelViewSet):
         if status is not None:
             queryset = queryset.filter(status=status)
         return queryset
+    
+    # PUT
+    def update(self, request, *args, **kwargs):
+        """Handle Update record
+        
+        """
+        instance = Photo.objects.get(id=request.data.get('id'))
+        state = request.data.get("status")
+        import pdb ; pdb.set_trace()
+        if state == "PUBLISHED" and not instance.published_at:
+            instance.published_at = datetime.now()
+            instance.save()
+        
+        if request.data.get("caption") and instance.caption != request.data.get("caption"):
+            #instance.tags.clear()
+            #instance.is_valid()
+            #instance.save()
+            pass
+
+        serializer = self.get_serializer(instance)
+        self.perform_update(serializer)
+
+        return Response(serializer.data)

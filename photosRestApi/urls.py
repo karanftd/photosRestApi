@@ -18,7 +18,7 @@ from django.urls import path
 from photosRestApi.photos import views
 from django.conf.urls import url, include
 from rest_framework import routers
-from rest_framework_simplejwt import views as jwt_views
+from rest_framework_jwt.views import obtain_jwt_token, refresh_jwt_token
 
 router = routers.DefaultRouter()
 router.register(r'photo', views.PhotoViewSet)
@@ -26,6 +26,8 @@ router.register(r'photo', views.PhotoViewSet)
 urlpatterns = [
     path('admin/', admin.site.urls),
     url(r'^', include(router.urls)),
-    path('token/', jwt_views.TokenObtainPairView.as_view(), name='token_obtain_pair'),
-    path('token/refresh/', jwt_views.TokenRefreshView.as_view(), name='token_refresh'),
+    url(r'^token/', obtain_jwt_token),
+    url(r'^token/refresh/', refresh_jwt_token),
+    # path('token/', jwt_views.TokenObtainPairView.as_view(), name='token_obtain_pair'),
+    # path('token/refresh/', jwt_views.TokenRefreshView.as_view(), name='token_refresh'),
 ]

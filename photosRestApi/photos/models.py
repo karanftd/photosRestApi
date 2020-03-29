@@ -70,6 +70,7 @@ class Photo(models.Model):
     caption = models.TextField(blank=True)
     status = models.TextField(choices=STATE, default='DRAFT')
     created = models.DateTimeField(auto_now_add=True)
+    published_at = models.DateTimeField(blank=True, null=True)
     tags = models.ManyToManyField(Tag, blank=True)
     
     class Meta:
