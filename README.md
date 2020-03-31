@@ -31,11 +31,12 @@ Method | Endpoint | Functionanlity
 POST | `/token/` | Request jwt token
 
 
-#### User Endpoints
+#### Photo Endpoints
 
 Method | Endpoint | Functionality
 --- | --- | ---
 GET | `/photo/` | List users's photos
+POST | `/photo/` | Uploda photo to user account
 GET | `/photo?user=all` | all the user's photos
 GET | `/photo?user={username}` | Retrieve photos of {username}
 PATCH | `/photo/{id}` | Edit a photo details
@@ -86,7 +87,7 @@ Create Super user
 Django RESTful
 
 ##### Deployment
-Docker | Heroku | Circle CI | AWS S3 | CloudFlair(DNS)
+Docker | Heroku | Circle CI | AWS S3 | Cloudflare(DNS)
 
 ##### Database Development:
 Postgres | SQLite
