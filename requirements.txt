@@ -6,7 +6,7 @@ Django==3.0.4
 django-cors-headers==3.2.1
 django-filter==2.2.0
 django-storages==1.9.1
-djangorestframework==3.11.0
+djangorestframework==3.11.2
 djangorestframework-jwt==1.11.0
 djangorestframework-simplejwt==4.4.0
 docutils==0.15.2
